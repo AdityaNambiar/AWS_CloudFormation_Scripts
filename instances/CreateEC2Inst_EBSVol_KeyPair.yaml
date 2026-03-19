@@ -1,0 +1,42 @@
+#### Author: Aditya Nambiar
+### Create an EC2 instance with 20GB Hard disk attached (Block Store) & Keypair ###
+
+
+# Requirements
+# AMI ID: "ami-0f559c3642608c138"
+# Default BlockDeviceMapping : "/dev/xvda"
+# BlockDeviceMapping - Ebs:
+#     - /dev/trimdiceapp
+#     - VolumeType: "io1"
+#     - VolumeSize: 20
+#     - DeleteOnTermination: true
+
+## Note:
+### "!Ref" = Refer another resource 
+
+Resources:
+    TrimDiceKeyPair:
+        Type: AWS::EC2::KeyPair
+        Properties:
+            KeyName: trim_dice_keypair
+    TrimDiceInstance:
+        Type: AWS::EC2::Instance
+        Properties:
+            ImageId: "ami-0f559c3642608c138"
+            InstanceType: "t2.micro"
+            KeyName: !Ref TrimDiceKeyPair
+            BlockDeviceMappings:
+            - DeviceName: "/dev/sdt"
+              Ebs:
+                VolumeType: "io1"
+                Iops: "200"
+                VolumeSize: "20"
+                DeleteOnTermination: "true"
+            - DeviceName: "/dev/xvda"
+              NoDevice: {}
+            SubnetId: "subnet-0f314bea3bdcbace4"
+            Tags:   
+            - Key: Name
+              Value: TrimDiceInstance
+
+      

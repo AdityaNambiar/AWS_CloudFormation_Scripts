@@ -1,0 +1,17 @@
+#### Author: Aditya Nambiar
+### Create a Private S3 Bucket - Simplest script ###
+
+## Note:
+### "!Sub" = Substitute a Global variable in the value you are defining.
+
+Resources:
+  BucketFromVSCode:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub ${AWS::StackName}-${AWS::AccountId}
+      AccessControl: Private  # Keep a practise to never create a Public S3 bucket
+
+Outputs: 
+  BucketFromVSCodeOutput:
+    Value: !Ref BucketFromVSCode
+    Description: Name of S3 bucket 
