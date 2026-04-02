@@ -1,5 +1,6 @@
 #### Author: Aditya Nambiar
 ### Create an EC2 instance with 20GB Hard disk attached (Block Store) & Keypair ###
+### Instance must also have access to Internet ###
 
 
 # Requirements
