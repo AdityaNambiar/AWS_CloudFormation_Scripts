@@ -23,6 +23,11 @@ create_change_set(){
     aws cloudformation create-change-set --change-set-type CREATE --stack-name $CFN_STACK_NAME --change-set-name $CFN_STACK_NAME --template-body "file://${TEMPLATE_FILE_NAME}"
 }
 
+update_change_set(){
+    echo -e "\n ---------- Creating change set stack $CFN_STACK_NAME, change set name $CFN_STACK_NAME, given template: $TEMPLATE_FILE_NAME ------------\n";
+    aws cloudformation create-change-set  --stack-name $CFN_STACK_NAME --change-set-name $CFN_STACK_NAME --template-body "file://${TEMPLATE_FILE_NAME}"
+}
+
 describe_change_set(){
     echo -e "\n ---------- Describing change set stack $CFN_STACK_NAME &  change set name $CFN_STACK_NAME------------\n";
     aws cloudformation describe-change-set --stack-name $CFN_STACK_NAME --change-set-name $CFN_STACK_NAME 
@@ -48,6 +53,7 @@ help() {
     echo -e "\tc\t=\tCreate Stack with given template";
     echo -e "\td\t=\tDelete Stack with given template (stackname mandatory)";
     echo -e "\tccs\t=\tCreate Change Set (dry-run purpose, default CS name: same as provided Stack Name)"; 
+    echo -e "\tucs\t=\tUpdate Change Set (dry-run purpose, default CS name: same as provided Stack Name)"; 
     echo -e "\tdesccs\t=\tDescribe Change Set (dry-run purpose)"; 
     echo -e "\tecs\t=\tExecute Change Set (dry-run purpose)";
     echo -e "\tdcs\t=\tDelete Change Set (dry-run purpose)\n";
@@ -138,6 +144,29 @@ Parse_Args() {
                         CFN_STACK_NAME=$filename_no_extension
                     fi
                     create_change_set
+                fi
+                break
+                ;;
+           ucs)
+                shift
+                ## Referred same from create-stack
+                if [[ $1 != "-t" ]] || [[ $1 == "" ]]; then
+                    HELPINFO=true
+                else 
+                    shift
+                    TEMPLATE_FILE_NAME=$1
+                    filename_no_extension="${TEMPLATE_FILE_NAME%%.*}"  ## Case sensitive for the variable name, can't have "template_file_name" instead of "TEMPLATE_FILE_NAME"
+                    ## If user gave a 2nd argument, then it must be "-name" otherwise show help
+                    if [[ $2 != "" ]]; then
+                        if [[ $2 == "-n" ]]; then 
+                            CFN_STACK_NAME=$3 
+                        else 
+                            HELPINFO=true
+                        fi
+                    else 
+                        CFN_STACK_NAME=$filename_no_extension
+                    fi
+                    update_change_set
                 fi
                 break
                 ;;
