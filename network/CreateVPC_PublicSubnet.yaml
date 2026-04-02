@@ -73,3 +73,16 @@ Resources:
           SubnetId: !Ref TrimDicePublicSubnet
           RouteTableId: !Ref TrimDiceRouteTable
             
+Outputs:
+  VpcId:
+    Value: !Ref TrimDiceVPC
+    Export:
+      Name: TrimDice-VpcId
+  SubnetId:
+    Value: !Ref TrimDicePublicSubnet
+    Export:
+      Name: TrimDice-SubnetId 
+  SGId:
+    Value: !Ref TrimDicePublicSG
+    Export:
+      Name: TrimDice-SGId

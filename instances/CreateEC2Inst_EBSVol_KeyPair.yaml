@@ -34,12 +34,11 @@ Resources:
                 VolumeSize: 20
                 DeleteOnTermination: true
             NetworkInterfaces:
-            - AssociatePublicIpAddress: "true"   ## As of Mar 2026, Public address can only be assigned via CloudFormation script if DeviceIndex = 0 & we are creating a new Network interface (VPC and PublicSubnet) 
+            - AssociatePublicIpAddress: true   ## As of Mar 2026, Public address can only be assigned via CloudFormation script if DeviceIndex = 0 & we are creating a new Network interface (VPC and PublicSubnet)
               DeviceIndex: "0"
-              GroupSet: 
-              - Ref: TrimDicePublicSG
-              SubnetId:
-                Ref: TrimDicePublicSubnet
+              GroupSet:
+              - !ImportValue TrimDice-SGId
+              SubnetId: !ImportValue TrimDice-SubnetId
             Tags:   
             - Key: Name
               Value: TrimDiceInstance
