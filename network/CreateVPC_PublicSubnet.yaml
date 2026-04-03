@@ -34,6 +34,10 @@ Resources:
               FromPort: 22
               ToPort: 22
               CidrIp: "0.0.0.0/0"
+            - IpProtocol: icmp
+              FromPort: 8
+              ToPort: -1
+              CidrIp: "0.0.0.0/0"
 
     # Attached Internet gateway for Internet access
     TDIGW:
