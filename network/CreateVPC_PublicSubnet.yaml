@@ -19,7 +19,7 @@ Resources:
           - Key: Name
             Value: TrimDicePubSubnet
     
-    # Defined a security group having 
+    # Defined a security group having allowing all EGress and only SSH (Port 22) and ICMP (Port 8) Ingress
     TrimDicePublicSG:
         Type: AWS::EC2::SecurityGroup
         Properties:
@@ -38,6 +38,12 @@ Resources:
               FromPort: 8
               ToPort: -1
               CidrIp: "0.0.0.0/0"
+
+    TrimDicePublicSGVPCAssociate:
+        Type: AWS::EC2::SecurityGroupVpcAssociation
+        Properties:
+          VpcId: !Ref TrimDiceVPC
+          GroupId: !Ref TrimDicePublicSG
 
     # Attached Internet gateway for Internet access
     TDIGW:
