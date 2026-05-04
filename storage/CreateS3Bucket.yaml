@@ -11,7 +11,23 @@ Resources:
       BucketName: !Sub ${AWS::StackName}-${AWS::AccountId}
       AccessControl: Private  # Keep a practise to never create a Public S3 bucket
 
+  S3BucketFSFromVSC:
+    Type: AWS::S3Files::FileSystem
+    Properties:
+      Bucket: !GetAtt BucketFromVSCode.Arn   # !Ref returns the ID of the Resource. !GetAtt returns the Properties of the Resource
+      RoleArn: arn:aws:iam::399839194485:role/ecsInstanceRole
+  S3BucketFSMountTarget:
+    Type: AWS::S3Files::MountTarget
+    Properties:
+      FileSystemId: !Ref S3BucketFSFromVSC
+      SubnetId: !ImportValue TrimDice-SubnetId
+      SecurityGroups:
+        - !ImportValue TrimDice-SGId
 Outputs: 
   BucketFromVSCodeOutput:
     Value: !Ref BucketFromVSCode
     Description: Name of S3 bucket 
+  S3BucketFSFromVSC:
+    Value: !Ref S3BucketFSMountTarget
+    Export:
+      Name: S3FS_Id
