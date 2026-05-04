@@ -10,7 +10,7 @@ validate_template() {
 
 create_stack() {
     echo -e "\n ---------- Creating stack $CFN_STACK_NAME given template: $TEMPLATE_FILE_NAME ------------\n";
-    aws cloudformation create-stack --capabilities CAPABILITY_NAMED_IAM --stack-name $CFN_STACK_NAME --template-body "file://${TEMPLATE_FILE_NAME}"
+    aws cloudformation create-stack --stack-name $CFN_STACK_NAME --template-body "file://${TEMPLATE_FILE_NAME}"
 }
 
 delete_stack() {
