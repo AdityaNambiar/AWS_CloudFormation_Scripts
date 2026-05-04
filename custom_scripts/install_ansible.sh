@@ -1,9 +1,9 @@
 #!/bin/bash
 # Update system packages
-sudo dnf update -y
+sudo yum update -y
 
 # Install Ansible (includes python3 and basic collections)
-sudo dnf install ansible -y
+sudo yum install ansible -y
 
 # Verify installation
 ansible --version

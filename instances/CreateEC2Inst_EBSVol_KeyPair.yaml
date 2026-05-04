@@ -22,6 +22,14 @@ Resources:
             KeyName: !Sub trim_dice_keypair-${AWS::StackName}
     TrimDiceInstance:
         Type: AWS::EC2::Instance
+        Metadata:
+          config:
+            packages:
+              yum:
+                ansible: []
+            commands:
+              checkAnsibleVersion:
+                command: "ansible --version >> /var/log/ansible_version.txt"
         Properties:
             ImageId: "ami-0f559c3642608c138"
             InstanceType: "t2.micro"
@@ -42,5 +50,10 @@ Resources:
             Tags:   
             - Key: Name
               Value: TrimDiceInstance
+            UserData: !Base64
+              Fn::Sub: |
+                #!/bin/bash
+                yum install -y aws-cfn-bootstrap
+                /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource EC2Instance --region ${AWS::Region}
 
       
