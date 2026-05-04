@@ -1,0 +1,43 @@
+Resources:
+  S3FSIAMRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: CustomS3FSIAMRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service: "elasticfilesystem.amazonaws.com"
+            Action: 
+              - "sts:AssumeRole"
+            Condition:
+              StringEquals:
+                aws:SourceAccount: !Sub "${AWS::AccountId}"
+              ArnLike:
+                aws:SourceArn: !Sub "arn:aws:s3files:${AWS::Region}:${AWS::AccountId}:file-system/*"
+      Policies:
+        - PolicyName: CustomS3FSIAMRolePolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action: 
+                  - s3:GetObject
+                  - s3:PutObject
+                  - s3:DeleteObject
+                  - s3:ListBucket
+                Resource:
+                  - !Sub
+                    - "arn:aws:s3:::${CustomBucketName}"
+                    - CustomBucketName: !ImportValue BucketFromVSCode
+                  - !Sub
+                    - "arn:aws:s3:::${CustomBucketName}/*"
+                    - CustomBucketName: !ImportValue BucketFromVSCode
+
+Outputs:
+    S3FSIAMRoleOP:
+      Value: !GetAtt S3FSIAMRole.Arn
+      Description: S3 FileSystem IAM Role
+      Export:
+        Name: S3FSIAMRoleArn

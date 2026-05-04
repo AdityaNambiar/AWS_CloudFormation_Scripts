@@ -1,0 +1,25 @@
+#### Author: Aditya Nambiar
+### Create a Private S3 Bucket - Simplest script ###
+
+## Note:
+### "!Sub" = Substitute a Global variable in the value you are defining.
+
+Resources:
+  S3BucketFSFromVSC:
+    Type: AWS::S3Files::FileSystem
+    Properties:
+      Bucket: !ImportValue BucketFromVSCodeArn 
+      RoleArn: !ImportValue S3FSIAMRoleArn
+    
+  S3BucketFSMountTarget:
+    Type: AWS::S3Files::MountTarget
+    Properties:
+      FileSystemId: !Ref S3BucketFSFromVSC  # !Ref returns the ID of the Resource. !GetAtt returns the Properties of the Resource
+      SubnetId: !ImportValue TrimDice-SubnetId
+      SecurityGroups:   # Aditya- (Check my LinkedIn Post) Its important that SG of your EC2 and S3Files remain same, otherwise mounting will timeout
+        - !ImportValue TrimDice-SGId
+Outputs: 
+  S3BucketFSFromVSC:
+    Value: !Ref S3BucketFSMountTarget
+    Export:
+      Name: S3FS-Id

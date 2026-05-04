@@ -20,30 +20,39 @@ Resources:
         Type: AWS::EC2::KeyPair
         Properties:
             KeyName: !Sub trim_dice_keypair-${AWS::StackName}
+    TrimDiceIAMInstProfile:
+      Type: AWS::IAM::InstanceProfile
+      Properties:
+        InstanceProfileName: CustomIAMInstProfile
+        Path: ecsInstanceRole
+        Roles: 
+          - ecsInstanceRole
     TrimDiceInstance:
         Type: AWS::EC2::Instance
         Metadata:
-          config:
-            packages:
-              yum:
-                ansible: []
-            commands:
-              checkAnsibleVersion:
-                command: "ansible --version >> /var/log/ansible_version.txt"
-              installS3FilesClientUtil:
-                command: "yum upgrade -y; curl https://amazon-efs-utils.aws.com/efs-utils-installer.sh | sudo sh -s -- --install"
-              createFolderForS3FilesMount:
-                command: "sudo mkdir /mnt/s3files"
-              createS3FilesMount:
-                command: 
-                  Fn::Sub:  # Aditya- Use dynamic substitution on long strings
-                    - "sudo mount -t s3files ${S3FileSystem_Id} /mnt/s3files"
-                    - S3FileSystem_Id: !ImportValue "S3FS_Id"
+          AWS::CloudFormation::Init:
+            config:
+              packages:
+                yum:
+                  ansible: []
+              commands:
+                checkAnsibleVersion:
+                  command: "ansible --version >> /var/log/ansible_version.txt"
+                installS3FilesClientUtil:
+                  command: "curl https://amazon-efs-utils.aws.com/efs-utils-installer.sh | sudo sh -s -- --install"
+                createFolderForS3FilesMount:
+                  command: "sudo mkdir /mnt/s3files"
+                createS3FilesMount:
+                  command: 
+                    Fn::Sub:  # Aditya- Use dynamic substitution on long strings
+                      - "sudo mount -t s3files ${S3FileSystem_Id} /mnt/s3files"
+                      - S3FileSystem_Id: !ImportValue "S3FS-Id"
               
         Properties:
             ImageId: "ami-0f559c3642608c138"
             InstanceType: "t2.micro"
             KeyName: !Ref TrimDiceKeyPair
+            IamInstanceProfile: !Ref TrimDiceIAMInstProfile
             BlockDeviceMappings:
             - DeviceName: "/dev/sdt"
               Ebs:
@@ -59,11 +68,11 @@ Resources:
               SubnetId: !ImportValue TrimDice-SubnetId
             Tags:   
             - Key: Name
-              Value: TrimDiceInstance
+              Value: !Sub ${AWS::StackName}
             UserData: !Base64
               Fn::Sub: |
                 #!/bin/bash
                 yum install -y aws-cfn-bootstrap
-                /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource EC2Instance --region ${AWS::Region}
+                /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource TrimDiceInstance --region ${AWS::Region}
 
       

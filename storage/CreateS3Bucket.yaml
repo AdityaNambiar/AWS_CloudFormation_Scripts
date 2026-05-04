@@ -10,24 +10,17 @@ Resources:
     Properties:
       BucketName: !Sub ${AWS::StackName}-${AWS::AccountId}
       AccessControl: Private  # Keep a practise to never create a Public S3 bucket
+      VersioningConfiguration:  # S3 FileSystem requires Bucket to be Version Enabled.
+        Status: Enabled
 
-  S3BucketFSFromVSC:
-    Type: AWS::S3Files::FileSystem
-    Properties:
-      Bucket: !GetAtt BucketFromVSCode.Arn   # !Ref returns the ID of the Resource. !GetAtt returns the Properties of the Resource
-      RoleArn: arn:aws:iam::399839194485:role/ecsInstanceRole
-  S3BucketFSMountTarget:
-    Type: AWS::S3Files::MountTarget
-    Properties:
-      FileSystemId: !Ref S3BucketFSFromVSC
-      SubnetId: !ImportValue TrimDice-SubnetId
-      SecurityGroups:   # Aditya- (Check my LinkedIn Post) Its important that SG of your EC2 and S3Files remain same, otherwise mounting will timeout
-        - !ImportValue TrimDice-SGId
 Outputs: 
-  BucketFromVSCodeOutput:
+  BucketFromVSCode:
     Value: !Ref BucketFromVSCode
-    Description: Name of S3 bucket 
-  S3BucketFSFromVSC:
-    Value: !Ref S3BucketFSMountTarget
-    Export:
-      Name: S3FS_Id
+    Description: Logical ID of S3 bucket 
+    Export: 
+      Name: BucketFromVSCode
+  BucketFromVSCodeArn:
+    Value: !GetAtt BucketFromVSCode.Arn
+    Description: ARN of S3 bucket 
+    Export: 
+      Name: BucketFromVSCodeArn
