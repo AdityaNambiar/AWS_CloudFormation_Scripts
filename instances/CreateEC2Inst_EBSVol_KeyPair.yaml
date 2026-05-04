@@ -24,7 +24,7 @@ Resources:
       Type: AWS::IAM::InstanceProfile
       Properties:
         InstanceProfileName: CustomIAMInstProfile
-        Path: ecsInstanceRole
+        Path: /roles/ecsInstanceRole/
         Roles: 
           - ecsInstanceRole
     TrimDiceInstance:
