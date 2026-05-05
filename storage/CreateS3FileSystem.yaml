@@ -20,6 +20,6 @@ Resources:
         - !ImportValue TrimDice-SGId
 Outputs: 
   S3BucketFSFromVSC:
-    Value: !Ref S3BucketFSMountTarget
+    Value: !GetAtt S3BucketFSFromVSC.FileSystemId
     Export:
       Name: S3FS-Id

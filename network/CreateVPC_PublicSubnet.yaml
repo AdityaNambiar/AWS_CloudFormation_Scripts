@@ -39,16 +39,16 @@ Resources:
               ToPort: -1
               CidrIp: "0.0.0.0/0"
                 
-
+    # To be able to self-reference a security group within its own Ingress Rule as a source, we create below rule seperately 
     TrimDicePublicSGIngressRule:
         Type: AWS::EC2::SecurityGroupIngress
         Properties:
             IpProtocol: tcp
-            FromPort: 0
+            FromPort: 2049
             ToPort: 2049
-            SourceSecurityGroupId: !Ref TrimDicePublicSG
+            SourceSecurityGroupId: !GetAtt TrimDicePublicSG.GroupId
             GroupId: !GetAtt TrimDicePublicSG.GroupId
-            GroupName: !GetAtt TrimDicePublicSG.GroupName
+              
 
     # Attached Internet gateway for Internet access
     TDIGW:
