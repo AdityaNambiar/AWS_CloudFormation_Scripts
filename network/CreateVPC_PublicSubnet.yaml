@@ -38,17 +38,17 @@ Resources:
               FromPort: 8
               ToPort: -1
               CidrIp: "0.0.0.0/0"
-            - IpProtocol: tcp
-              FromPort: 0
-              ToPort: 2049
-              SourceSecurityGroupId: TrimDicePublicSG
                 
 
-    # TrimDicePublicSGVPCAssociate:
-    #     Type: AWS::EC2::SecurityGroupVpcAssociation
-    #     Properties:
-    #       VpcId: !Ref TrimDiceVPC
-    #       GroupId: !Ref TrimDicePublicSG
+    TrimDicePublicSGIngressRule:
+        Type: AWS::EC2::SecurityGroupIngress
+        Properties:
+            IpProtocol: tcp
+            FromPort: 0
+            ToPort: 2049
+            SourceSecurityGroupId: !Ref TrimDicePublicSG
+            GroupId: !GetAtt TrimDicePublicSG.GroupId
+            GroupName: !GetAtt TrimDicePublicSG.GroupName
 
     # Attached Internet gateway for Internet access
     TDIGW:
