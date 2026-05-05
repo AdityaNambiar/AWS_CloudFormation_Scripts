@@ -38,7 +38,7 @@ Resources:
               FromPort: 8
               ToPort: -1
               CidrIp: "0.0.0.0/0"
-            - IpProtocol: nfs
+            - IpProtocol: tcp
               FromPort: 0
               ToPort: 2049
               SourceSecurityGroupId: TrimDicePublicSG
