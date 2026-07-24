@@ -18,6 +18,9 @@ Resources:
       SubnetId: !ImportValue TrimDice-SubnetId
       SecurityGroups:   # Aditya- (Check my LinkedIn Post) Its important that SG of your EC2 and S3Files remain same, otherwise mounting will timeout
         - !ImportValue TrimDice-SGId
+  
+    DependsOn: [ "BucketFromVSCode", "S3FSIAMRole" ]
+
 Outputs: 
   S3BucketFSFromVSC:
     Value: !GetAtt S3BucketFSFromVSC.FileSystemId

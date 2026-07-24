@@ -1,0 +1,14 @@
+Resources:
+    TrimDiceIAMInstProfile:
+      Type: AWS::IAM::InstanceProfile
+      Properties:
+        InstanceProfileName: CustomIAMInstProfile
+        Path: /         # Run: aws iam get-role --role-name ecsInstanceRole --query 'Role.Path'
+        Roles: 
+          - ecsInstanceRole
+
+Outputs:
+  IAMInstProfile:
+    Value: !Ref TrimDiceIAMInstProfile
+    Export:
+      Name: CustomIAMInstProfile

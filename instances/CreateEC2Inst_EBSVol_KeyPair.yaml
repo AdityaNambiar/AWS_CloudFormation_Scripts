@@ -20,13 +20,7 @@ Resources:
         Type: AWS::EC2::KeyPair
         Properties:
             KeyName: !Sub trim_dice_keypair-${AWS::StackName}
-    TrimDiceIAMInstProfile:
-      Type: AWS::IAM::InstanceProfile
-      Properties:
-        InstanceProfileName: CustomIAMInstProfile
-        Path: /roles/ecsInstanceRole/
-        Roles: 
-          - ecsInstanceRole
+
     TrimDiceInstance:
         Type: AWS::EC2::Instance
         Metadata:
@@ -55,7 +49,7 @@ Resources:
             ImageId: "ami-0f559c3642608c138"
             InstanceType: "t2.micro"
             KeyName: !Ref TrimDiceKeyPair
-            IamInstanceProfile: !Ref TrimDiceIAMInstProfile
+            IamInstanceProfile: ecsInstanceRole  # Existing IAM Instance Profile which was created on the console long back
             BlockDeviceMappings:
             - DeviceName: "/dev/sdt"
               Ebs:
@@ -77,5 +71,6 @@ Resources:
                 #!/bin/bash
                 yum install -y aws-cfn-bootstrap
                 /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource TrimDiceInstance --region ${AWS::Region}
+        DependsOn: [ ]
 
       
