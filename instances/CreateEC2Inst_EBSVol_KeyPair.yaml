@@ -71,6 +71,6 @@ Resources:
                 #!/bin/bash
                 yum install -y aws-cfn-bootstrap
                 /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource TrimDiceInstance --region ${AWS::Region}
-        DependsOn: [ ]
+
 
       

@@ -12,9 +12,10 @@ Resources:
     TrimDicePublicSubnet:
         Type: AWS::EC2::Subnet
         Properties:
-          VpcId: !Ref TrimDiceVPC
+          VpcId:
+            Ref: TrimDiceVPC
           CidrBlock: 10.0.0.0/24
-          AvailabilityZone: 'ap-south-1a'
+          AvailabilityZone: "ap-south-1b"
           Tags:
           - Key: Name
             Value: TrimDicePubSubnet
@@ -23,7 +24,8 @@ Resources:
     TrimDicePublicSG:
         Type: AWS::EC2::SecurityGroup
         Properties:
-          VpcId: !Ref TrimDiceVPC
+          VpcId:
+            Ref: TrimDiceVPC
           GroupName: TrimDicePublicSG
           GroupDescription: "Security group to associate with TrimDicePublicSubnet"
           SecurityGroupEgress:
@@ -46,8 +48,14 @@ Resources:
             IpProtocol: tcp
             FromPort: 2049
             ToPort: 2049
-            SourceSecurityGroupId: !GetAtt TrimDicePublicSG.GroupId
-            GroupId: !GetAtt TrimDicePublicSG.GroupId
+            SourceSecurityGroupId:
+              Fn::GetAtt:
+                - TrimDicePublicSG
+                - GroupId
+            GroupId:
+              Fn::GetAtt:
+                - TrimDicePublicSG
+                - GroupId
               
 
     # Attached Internet gateway for Internet access
@@ -71,13 +79,16 @@ Resources:
         Type: AWS::EC2::Route
         DependsOn: TDVPCGWAttachment
         Properties:
-          RouteTableId: !Ref TrimDiceRouteTable
+          RouteTableId:
+            Ref: TrimDiceRouteTable
           DestinationCidrBlock: "0.0.0.0/0"
-          GatewayId: !Ref TDIGW
+          GatewayId:
+            Ref: TDIGW
     TrimDiceRouteTable:
         Type: AWS::EC2::RouteTable
         Properties:
-          VpcId: !Ref TrimDiceVPC
+          VpcId:
+            Ref: TrimDiceVPC
           Tags:
           - Key: Name
             Value: TrimDiceRouteTable
@@ -85,19 +96,24 @@ Resources:
     TrimDiceSubnetRTAssociation:
         Type: AWS::EC2::SubnetRouteTableAssociation
         Properties:
-          SubnetId: !Ref TrimDicePublicSubnet
-          RouteTableId: !Ref TrimDiceRouteTable
+          SubnetId:
+            Ref: TrimDicePublicSubnet
+          RouteTableId:
+            Ref: TrimDiceRouteTable
             
 Outputs:
   VpcId:
-    Value: !Ref TrimDiceVPC
+    Value:
+      Ref: TrimDiceVPC
     Export:
       Name: TrimDice-VpcId
   SubnetId:
-    Value: !Ref TrimDicePublicSubnet
+    Value:
+      Ref: TrimDicePublicSubnet
     Export:
       Name: TrimDice-SubnetId 
   SGId:
-    Value: !Ref TrimDicePublicSG
+    Value:
+      Ref: TrimDicePublicSG
     Export:
       Name: TrimDice-SGId
