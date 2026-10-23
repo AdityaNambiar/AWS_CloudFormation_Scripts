@@ -15,7 +15,7 @@ Resources:
           VpcId:
             Ref: TrimDiceVPC
           CidrBlock: 10.0.0.0/24
-          AvailabilityZone: "ap-south-1b"
+          AvailabilityZone: "ap-south-1b"  
           Tags:
           - Key: Name
             Value: TrimDicePubSubnet
